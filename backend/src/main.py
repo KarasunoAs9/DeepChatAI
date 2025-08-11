@@ -3,10 +3,11 @@ from src.routers import api_router
 from src.core.database import register_db
 from fastapi.middleware.cors import CORSMiddleware
 
+
 def create_app() -> FastAPI:
     app = FastAPI()
-    app.include_router(api_router)
     register_db(app)
+    app.include_router(api_router)
 
     app.add_middleware(
         CORSMiddleware,
