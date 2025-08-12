@@ -8,6 +8,7 @@ from src.core.security import hash_password, verify_password
 from datetime import timedelta, datetime, timezone
 from jose import JWTError, jwt
 from src.core.config import settings
+from src.services.dependencies import get_current_user
 
 router = APIRouter()
 
@@ -37,5 +38,15 @@ async def login_user(form_data: Annotated[OAuth2PasswordRequestForm, Depends()])
     return {"access_token": token, "token_type": "bearer"}
 
 @router.put("/change_password")
-async def change_user_password(form_data: ChangePassword, ):
-    user = await User.filter()
+async def change_user_password(form_data: ChangePassword, current_user: Annotated[dict, Depends(get_current_user)]):
+    current_password = form_data.current_password
+    new_password = form_data.new_password
+
+    if not current_password or not new_password:
+        raise HTTPException(status_code=401, detail="Invalid data")
+    
+    if not verify_password(current_password, current_user.hashed_password):
+        raise  HTTPException(status_code=401, detail="Type a right current password")
+    
+    current_user.hashed_password = hash_password(new_password)
+    await current_user.save()
