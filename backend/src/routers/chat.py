@@ -24,6 +24,28 @@ async def create_new_chat(chat: CreateChat, current_user: Annotated[dict, Depend
     )
     return {"chat_id": chat_model.id}
 
+@router.get("/{chat_id}/history")
+async def get_chat_history(chat_id: int, current_user: Annotated[dict, Depends(get_current_user)]):
+    chat = await Chat.get_or_none(id=chat_id, user=current_user)
+    if not chat:
+        raise HTTPException(status_code=404, detail=f"Chat with id: {chat_id} and this user: {get_current_user} not found")
+    
+    messages = await ChatMessage.filter(chat=chat).all()
+    formated_message = []
+    for message in messages:
+        formated_message.append({
+            "id": message.id + "_user",
+            "role": "user",
+            "content": message.user_message
+        })
+        formated_message.append({
+            "id": message.id + "_assistant",
+            "role": "assistant",
+            "content": message.bot_response
+        })
+    return formated_message
+
+    
 
 @router.patch("/rename_chat/{id}")
 async def rename_user_chat(id: int, new_name: str, current_user: Annotated[dict, Depends(get_current_user)]):
