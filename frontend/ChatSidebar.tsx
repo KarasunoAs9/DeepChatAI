@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { PlusIcon, MessageSquareIcon, MenuIcon, XIcon } from 'lucide-react';
+import { PlusIcon, MessageSquareIcon, XIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ChatHistory {
@@ -47,22 +47,22 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ isOpen, onToggle, onNewChat }
       
       {/* Sidebar */}
       <div className={cn(
-        "fixed top-0 left-0 h-full bg-chat-sidebar border-r border-border z-50 transition-transform duration-300 lg:relative lg:translate-x-0",
+        "fixed top-0 left-0 h-full bg-white border-r border-gray-200 z-50 transition-transform duration-300 lg:relative lg:translate-x-0 shadow-lg",
         isOpen ? "translate-x-0" : "-translate-x-full",
         "w-64"
       )}>
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-border">
-          <h1 className="text-lg font-semibold bg-gradient-primary bg-clip-text text-transparent">
+        <div className="flex items-center justify-between p-4 border-b border-gray-200">
+          <h1 className="text-lg font-semibold text-gray-900">
             DeepChatAI
           </h1>
           <Button
             variant="ghost"
             size="icon"
             onClick={onToggle}
-            className="lg:hidden"
+            className="lg:hidden hover:bg-gray-100"
           >
-            <XIcon className="h-4 w-4" />
+            <XIcon className="h-4 w-4 text-gray-500" />
           </Button>
         </div>
 
@@ -70,8 +70,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ isOpen, onToggle, onNewChat }
         <div className="p-4">
           <Button
             onClick={onNewChat}
-            variant="chat"
-            className="w-full justify-start gap-3"
+            className="w-full justify-start gap-2 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg"
           >
             <PlusIcon className="h-4 w-4" />
             Новый чат
@@ -80,20 +79,20 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ isOpen, onToggle, onNewChat }
 
         {/* Chat History */}
         <div className="px-4">
-          <h2 className="text-sm font-medium text-muted-foreground mb-2">История</h2>
+          <h2 className="text-xs font-medium text-gray-500 mb-3 uppercase tracking-wider">История</h2>
           <ScrollArea className="h-[calc(100vh-200px)]">
             <div className="space-y-1">
               {chatHistory.map((chat) => (
                 <div
                   key={chat.id}
-                  className="group flex items-start gap-3 p-3 rounded-lg hover:bg-secondary/50 cursor-pointer transition-colors duration-200"
+                  className="flex items-start gap-2 p-2 rounded-md hover:bg-gray-100 cursor-pointer transition-colors duration-150"
                 >
-                  <MessageSquareIcon className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                  <MessageSquareIcon className="h-4 w-4 text-gray-400 mt-0.5 flex-shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-foreground group-hover:text-primary transition-colors duration-200 truncate">
+                    <p className="text-sm text-gray-900 truncate">
                       {chat.title}
                     </p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-gray-500">
                       {formatTime(chat.timestamp)}
                     </p>
                   </div>

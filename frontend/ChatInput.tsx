@@ -46,10 +46,10 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading = false,
   }, [message]);
 
   return (
-    <div className="border-t border-border bg-background/80 backdrop-blur-sm">
-      <div className="container max-w-4xl mx-auto p-4">
-        <form onSubmit={handleSubmit} className="relative">
-          <div className="relative flex items-end gap-2 p-3 bg-chat-input rounded-xl border border-border shadow-elegant">
+    <div className="border-t border-gray-200 bg-white p-4">
+      <div className="max-w-4xl mx-auto">
+        <form onSubmit={handleSubmit}>
+          <div className="flex items-end gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
             <Textarea
               ref={textareaRef}
               value={message}
@@ -60,9 +60,9 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading = false,
               onKeyDown={handleKeyDown}
               placeholder="Введите ваше сообщение..."
               className={cn(
-                "min-h-[40px] max-h-[120px] resize-none border-0 bg-transparent",
-                "placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0",
-                "scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent"
+                "min-h-[40px] max-h-[120px] resize-none border-0 bg-transparent text-gray-900",
+                "placeholder:text-gray-500 focus-visible:ring-0 focus-visible:ring-offset-0",
+                "scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent"
               )}
               style={{ height: 'auto' }}
             />
@@ -72,9 +72,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading = false,
                 <Button
                   type="button"
                   onClick={onStop}
-                  variant="chat-outline"
-                  size="icon"
-                  className="h-10 w-10"
+                  className="h-10 w-10 bg-red-600 hover:bg-red-700 text-white rounded-lg"
                 >
                   <StopCircleIcon className="h-4 w-4" />
                 </Button>
@@ -82,9 +80,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading = false,
                 <Button
                   type="submit"
                   disabled={!message.trim()}
-                  variant="chat"
-                  size="icon"
-                  className="h-10 w-10"
+                  className="h-10 w-10 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:text-gray-500 text-white rounded-lg transition-colors duration-200"
                 >
                   <SendIcon className="h-4 w-4" />
                 </Button>
@@ -92,7 +88,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading = false,
             </div>
           </div>
           
-          <p className="text-xs text-muted-foreground text-center mt-2">
+          <p className="text-xs text-gray-500 text-center mt-2">
             Нажмите Enter для отправки, Shift+Enter для новой строки
           </p>
         </form>

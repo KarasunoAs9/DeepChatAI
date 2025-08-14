@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import ChatSidebar from '@/components/ChatSidebar';
-import ChatContainer from '@/components/ChatContainer';
+import { useState } from 'react';
+import ChatSidebar from '@/ChatSidebar';
+import ChatContainer from '@/ChatContainer';
 
 const Index = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -15,17 +15,16 @@ const Index = () => {
   };
 
   return (
-    <div className="flex h-screen bg-chat-background">
+    <div className="flex h-screen bg-gray-50">
       <ChatSidebar 
         isOpen={sidebarOpen}
         onToggle={handleToggleSidebar}
         onNewChat={handleNewChat}
       />
       
-      <div className="flex-1 lg:ml-0">
+      <div className="flex-1">
         <ChatContainer 
           onToggleSidebar={handleToggleSidebar}
-          sidebarOpen={sidebarOpen}
         />
       </div>
     </div>

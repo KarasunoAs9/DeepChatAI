@@ -17,39 +17,38 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message, isUser, timestamp })
   };
 
   return (
-    <div className={cn(
-      "flex gap-4 p-4 rounded-xl animate-slide-in-up",
-      isUser 
-        ? "bg-gradient-message border border-primary/20" 
-        : "bg-secondary/30"
-    )}>
+    <div className="flex gap-3 p-4 w-full">
       {/* Avatar */}
-      <div className={cn(
-        "flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center",
-        isUser
-          ? "bg-primary text-primary-foreground"
-          : "bg-accent text-accent-foreground"
-      )}>
+      <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center">
         {isUser ? (
-          <UserIcon className="h-4 w-4" />
+          <div className="w-8 h-8 rounded-full bg-gray-400 flex items-center justify-center">
+            <UserIcon className="h-4 w-4 text-white" />
+          </div>
         ) : (
-          <BotIcon className="h-4 w-4" />
+          <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center">
+            <BotIcon className="h-4 w-4 text-white" />
+          </div>
         )}
       </div>
 
       {/* Message Content */}
-      <div className="flex-1 space-y-2">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-medium">
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-sm font-medium text-gray-900">
             {isUser ? 'Вы' : 'DeepChatAI'}
           </span>
-          <span className="text-xs text-muted-foreground">
+          <span className="text-xs text-gray-500">
             {formatTime(timestamp)}
           </span>
         </div>
         
-        <div className="prose prose-sm max-w-none">
-          <p className="text-foreground leading-relaxed whitespace-pre-wrap">
+        <div className={cn(
+          "p-3 rounded-lg border",
+          isUser
+            ? "bg-blue-50 border-blue-200"
+            : "bg-gray-50 border-gray-200"
+        )}>
+          <p className="text-sm leading-relaxed whitespace-pre-wrap text-gray-900">
             {message}
           </p>
         </div>
