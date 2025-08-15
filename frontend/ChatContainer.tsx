@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
-import { MenuIcon, BotIcon } from 'lucide-react';
+import { MenuIcon, BotIcon, LogOut } from 'lucide-react';
+import { useAuth } from '@/AuthContext';
 import ChatMessage from '@/ChatMessage';
 import ChatInput from '@/ChatInput';
 
@@ -29,6 +30,7 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ onToggleSidebar }) => {
   const [isLoading, setIsLoading] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { signOut, user } = useAuth();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -83,9 +85,13 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ onToggleSidebar }) => {
         <div className="flex-1">
           <h1 className="text-lg font-semibold text-gray-900">Новый чат</h1>
           <p className="text-sm text-gray-500">
-            Ведите диалог с DeepChatAI
+            Ведите диалог с DeepChatAI{user ? ` • ${user.username}` : ''}
           </p>
         </div>
+
+        <Button variant="outline" size="sm" onClick={signOut} className="rounded-lg">
+          <LogOut className="h-4 w-4" />
+        </Button>
       </div>
 
       {/* Messages */}
