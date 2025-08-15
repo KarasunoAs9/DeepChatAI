@@ -44,8 +44,7 @@ async def get_chat_history(chat_id: int, current_user: Annotated[dict, Depends(g
             "content": message.bot_response
         })
     return formated_message
-
-    
+ 
 
 @router.patch("/rename_chat/{id}")
 async def rename_user_chat(id: int, new_name: str, current_user: Annotated[dict, Depends(get_current_user)]):
