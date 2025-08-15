@@ -50,4 +50,36 @@ export async function getMe(token: string) {
   return res.json()
 }
 
+export async function getUserChats(token: string) {
+  const res = await fetch(`${API_URL}/chat/my`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  if (!res.ok && res.status !== 404) {
+    throw new Error('Не удалось загрузить чаты')
+  }
+  if (res.status === 404) return []
+  return res.json()
+}
+
+export async function getChatHistory(chatId: number, token: string) {
+  const res = await fetch(`${API_URL}/chat/${chatId}/history`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  if (!res.ok) throw new Error('Не удалось загрузить историю чата')
+  return res.json()
+}
+
+export async function createNewChat(token: string, name?: string) {
+  const res = await fetch(`${API_URL}/chat/new_chat`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ name: name || 'Новый чат' }),
+  })
+  if (!res.ok) throw new Error('Не удалось создать чат')
+  return res.json()
+}
+
 

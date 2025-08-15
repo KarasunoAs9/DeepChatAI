@@ -7,7 +7,7 @@ agent = create_agent(vector_store)
 
 async def process_chat(message: str, chat_history: list) -> str:
 
-    retriever = agent.ainvoke(
+    retriever = await agent.ainvoke(
        {
            "input": message,
            "chat_history": chat_history

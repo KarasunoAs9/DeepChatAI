@@ -17,7 +17,7 @@ def create_access_token(data: dict, timedelta: timedelta):
     to_encode = data.copy()
     expires = datetime.now(timezone.utc) + timedelta
     to_encode.update({"exp": expires})
-    return jwt.encode(to_encode, settings.SECRET_KEY, settings.ALOGORITHM)
+    return jwt.encode(to_encode, settings.SECRET_KEY, settings.ALGORITHM)
 
 @router.post("/register")
 async def register_new_user(user: UserCreate):

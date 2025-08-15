@@ -9,7 +9,7 @@ oauth_bearer = OAuth2PasswordBearer("/auth/sign_in")
 
 async def get_current_user(token: Annotated[str, Depends(oauth_bearer)]):
     try:
-        payload = jwt.decode(token, settings.SECRET_KEY, settings.ALOGORITHM)
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         username: str = payload.get("sub")
         if not username:
             raise HTTPException(status_code=401, detail="Invalid auth data")

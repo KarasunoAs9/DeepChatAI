@@ -8,6 +8,6 @@ api_router = APIRouter()
 api_router.include_router(router=auth_router, prefix="/auth", tags=["Auth"])
 api_router.include_router(router=user_router, prefix="/user", tags=["User"])
 api_router.include_router(router=chat_router, prefix="/chat", tags=["Chat"])
-api_router.include_router(router=websocket_router, prefix="/ws", tags=["WebSocket"])
+api_router.include_router(router=websocket_router, tags=["WebSocket"])
 
 __all__ = ["api_router"]

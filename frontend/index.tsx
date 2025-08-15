@@ -7,14 +7,20 @@ import { useAuth } from '@/AuthContext';
 const Index = () => {
   const { token, loading } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [currentChatId, setCurrentChatId] = useState<number | undefined>();
+  const [currentChatName, setCurrentChatName] = useState<string | undefined>();
 
   const handleToggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  const handleNewChat = () => {
-    // Logic for creating a new chat
-    console.log('Creating new chat...');
+  const handleChatSelect = (chatId: number, chatName: string) => {
+    setCurrentChatId(chatId);
+    setCurrentChatName(chatName);
+    // Закрываем сайдбар на мобильных
+    if (window.innerWidth < 1024) {
+      setSidebarOpen(false);
+    }
   };
 
   if (loading) {
@@ -30,11 +36,16 @@ const Index = () => {
       <ChatSidebar
         isOpen={sidebarOpen}
         onToggle={handleToggleSidebar}
-        onNewChat={handleNewChat}
+        onChatSelect={handleChatSelect}
+        currentChatId={currentChatId}
       />
 
       <div className="flex-1">
-        <ChatContainer onToggleSidebar={handleToggleSidebar} />
+        <ChatContainer 
+          onToggleSidebar={handleToggleSidebar}
+          currentChatId={currentChatId}
+          chatName={currentChatName}
+        />
       </div>
     </div>
   );

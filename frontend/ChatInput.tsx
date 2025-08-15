@@ -8,15 +8,16 @@ interface ChatInputProps {
   onSendMessage: (message: string) => void;
   isLoading?: boolean;
   onStop?: () => void;
+  disabled?: boolean;
 }
 
-const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading = false, onStop }) => {
+const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading = false, onStop, disabled = false }) => {
   const [message, setMessage] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (message.trim() && !isLoading) {
+    if (message.trim() && !isLoading && !disabled) {
       onSendMessage(message.trim());
       setMessage('');
       if (textareaRef.current) {
@@ -58,11 +59,13 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading = false,
                 adjustTextareaHeight();
               }}
               onKeyDown={handleKeyDown}
-              placeholder="Введите ваше сообщение..."
+              placeholder={disabled ? "Подключение..." : "Введите ваше сообщение..."}
+              disabled={disabled}
               className={cn(
                 "min-h-[40px] max-h-[120px] resize-none border-0 bg-transparent text-gray-900",
                 "placeholder:text-gray-500 focus-visible:ring-0 focus-visible:ring-offset-0",
-                "scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent"
+                "scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent",
+                disabled && "opacity-50 cursor-not-allowed"
               )}
               style={{ height: 'auto' }}
             />
@@ -79,7 +82,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading = false,
               ) : (
                 <Button
                   type="submit"
-                  disabled={!message.trim()}
+                  disabled={!message.trim() || disabled}
                   className="h-10 w-10 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:text-gray-500 text-white rounded-lg transition-colors duration-200"
                 >
                   <SendIcon className="h-4 w-4" />
