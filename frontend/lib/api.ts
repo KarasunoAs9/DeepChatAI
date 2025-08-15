@@ -65,7 +65,13 @@ export async function getChatHistory(chatId: number, token: string) {
   const res = await fetch(`${API_URL}/chat/${chatId}/history`, {
     headers: { Authorization: `Bearer ${token}` },
   })
-  if (!res.ok) throw new Error('Не удалось загрузить историю чата')
+  if (!res.ok) {
+    if (res.status === 404) {
+      // Чат не найден или нет доступа - возвращаем пустой массив
+      return []
+    }
+    throw new Error('Не удалось загрузить историю чата')
+  }
   return res.json()
 }
 

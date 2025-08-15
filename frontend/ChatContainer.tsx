@@ -24,6 +24,7 @@ const ChatContainer: React.FC<ChatContainerProps> = ({
   const [isConnected, setIsConnected] = useState(false);
   const [wsManager, setWsManager] = useState<WebSocketChatManager | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -43,6 +44,12 @@ const ChatContainer: React.FC<ChatContainerProps> = ({
       token,
       (message) => {
         setMessages(prev => {
+          // Проверяем, не дублируется ли сообщение с историей
+          const existingMessage = prev.find(m => m.id === message.id);
+          if (existingMessage && !message.isThinking && !message.isStreaming) {
+            return prev; // Не добавляем дубликат
+          }
+          
           // Удаляем предыдущие thinking/streaming сообщения если пришел финальный ответ
           if (!message.isThinking && !message.isStreaming) {
             const filtered = prev.filter(m => !m.isThinking && !m.isStreaming);
@@ -92,17 +99,31 @@ const ChatContainer: React.FC<ChatContainerProps> = ({
     const loadHistory = async () => {
       if (!token) return;
       
+      setIsLoadingHistory(true);
+      setError(null);
+      
       try {
         const history = await getChatHistory(currentChatId, token);
-        const convertedMessages: WSChatMessage[] = history.map((msg: any) => ({
-          id: msg.id,
-          content: msg.content,
-          isUser: msg.role === 'user',
-          timestamp: new Date()
-        }));
-        setMessages(convertedMessages);
+        console.log('Loaded chat history:', history);
+        
+        if (Array.isArray(history) && history.length > 0) {
+          const convertedMessages: WSChatMessage[] = history.map((msg: any) => ({
+            id: msg.id,
+            content: msg.content,
+            isUser: msg.role === 'user',
+            timestamp: msg.timestamp ? new Date(msg.timestamp) : new Date()
+          }));
+          setMessages(convertedMessages);
+        } else {
+          // Если история пуста, устанавливаем пустой массив
+          setMessages([]);
+        }
       } catch (err) {
         console.error('Failed to load chat history:', err);
+        setError('Не удалось загрузить историю чата');
+        setMessages([]);
+      } finally {
+        setIsLoadingHistory(false);
       }
     };
 
@@ -189,6 +210,20 @@ const ChatContainer: React.FC<ChatContainerProps> = ({
                   </div>
                 </div>
               </div>
+            ) : isLoadingHistory ? (
+              <div className="flex items-center justify-center h-full min-h-[400px]">
+                <div className="text-center space-y-6 max-w-md mx-auto px-6">
+                  <div className="w-16 h-16 mx-auto bg-blue-600 rounded-full flex items-center justify-center animate-pulse">
+                    <span className="text-2xl">📚</span>
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-semibold text-gray-900 mb-3">Загружаем историю</h2>
+                    <p className="text-gray-600 leading-relaxed">
+                      Пожалуйста, подождите...
+                    </p>
+                  </div>
+                </div>
+              </div>
             ) : messages.length === 0 ? (
               <div className="flex items-center justify-center h-full min-h-[400px]">
                 <div className="text-center space-y-6 max-w-md mx-auto px-6">
@@ -226,9 +261,9 @@ const ChatContainer: React.FC<ChatContainerProps> = ({
       {currentChatId && (
         <ChatInput
           onSendMessage={handleSendMessage}
-          isLoading={isLoading}
+          isLoading={isLoading || isLoadingHistory}
           onStop={handleStopGeneration}
-          disabled={!isConnected}
+          disabled={!isConnected || isLoadingHistory}
         />
       )}
     </div>

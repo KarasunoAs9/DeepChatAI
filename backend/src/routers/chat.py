@@ -28,20 +28,22 @@ async def create_new_chat(chat: CreateChat, current_user: Annotated[dict, Depend
 async def get_chat_history(chat_id: int, current_user: Annotated[dict, Depends(get_current_user)]):
     chat = await Chat.get_or_none(id=chat_id, user=current_user)
     if not chat:
-        raise HTTPException(status_code=404, detail=f"Chat with id: {chat_id} and this user: {get_current_user} not found")
+        raise HTTPException(status_code=404, detail=f"Chat with id: {chat_id} and this user: {current_user.username} not found")
     
-    messages = await ChatMessage.filter(chat=chat).all()
+    messages = await ChatMessage.filter(chat=chat).order_by('time').all()
     formated_message = []
     for message in messages:
         formated_message.append({
-            "id": message.id + "_user",
+            "id": f"{message.id}_user",
             "role": "user",
-            "content": message.user_message
+            "content": message.user_message,
+            "timestamp": message.time.isoformat()
         })
         formated_message.append({
-            "id": message.id + "_assistant",
+            "id": f"{message.id}_assistant",
             "role": "assistant",
-            "content": message.bot_response
+            "content": message.bot_response,
+            "timestamp": message.time.isoformat()
         })
     return formated_message
  
