@@ -6,7 +6,7 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 def create_agent(vector_store: FAISS) -> AgentExecutor:
     llm = ChatOpenAI(
-        model="gpt-4o-mini",  # Исправил модель на существующую
+        model="gpt-4o-mini",
         temperature=0.7
     )
 
