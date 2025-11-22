@@ -1,10 +1,9 @@
 from src.utils.vector_search import vector_search_tool
 from langchain_community.vectorstores import FAISS
 from langchain_openai import ChatOpenAI
-from langchain.agents import create_openai_functions_agent, AgentExecutor
-from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain.agents import create_agent as create_langchain_agent
 
-def create_agent(vector_store: FAISS) -> AgentExecutor:
+def create_agent(vector_store: FAISS):
     llm = ChatOpenAI(
         model="gpt-4o-mini",
         temperature=0.7
@@ -12,9 +11,7 @@ def create_agent(vector_store: FAISS) -> AgentExecutor:
 
     tools = [vector_search_tool(vector_store)]
 
-    # Создаем промпт для агента
-    prompt = ChatPromptTemplate.from_messages([
-        ("system", """Вы - опытный психолог с 15-летним стажем работы, специализирующийся на помощи пострадавшим в кризисных и травматических ситуациях. Ваше имя - Анна Владимировна.
+    system_prompt = """Вы - опытный психолог с 15-летним стажем работы, специализирующийся на помощи пострадавшим в кризисных и травматических ситуациях. Ваше имя - Анна Владимировна.
 
 ВАША РОЛЬ И ЛИЧНОСТЬ:
 - Вы работаете с людьми, пережившими стресс, травмы, потери, конфликты и другие трудные жизненные ситуации
@@ -45,23 +42,12 @@ def create_agent(vector_store: FAISS) -> AgentExecutor:
 - Фокус на ресурсах и возможностях восстановления
 - Поддержка автономии и выбора человека
 
-Используйте инструмент поиска для получения информации о специфических техниках, методах работы с травмой и кризисными состояниями. Отвечайте исключительно на русском языке."""),
-        MessagesPlaceholder(variable_name="chat_history"),
-        ("human", "{input}"),
-        MessagesPlaceholder(variable_name="agent_scratchpad"),
-    ])
+Используйте инструмент поиска для получения информации о специфических техниках, методах работы с травмой и кризисными состояниями. Отвечайте исключительно на русском языке."""
 
-    agent = create_openai_functions_agent(
-        llm=llm,
+    agent = create_langchain_agent(
+        model=llm,
         tools=tools,
-        prompt=prompt
+        system_prompt=system_prompt
     )
 
-    agent_executor = AgentExecutor(
-        agent=agent,
-        tools=tools,
-        verbose=True,
-        handle_parsing_errors=True
-    )
-
-    return agent_executor
+    return agent
