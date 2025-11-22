@@ -88,4 +88,31 @@ export async function createNewChat(token: string, name?: string) {
   return res.json()
 }
 
+export async function renameChat(chatId: number, newName: string, token: string) {
+  const res = await fetch(`${API_URL}/chat/rename_chat/${chatId}?new_name=${encodeURIComponent(newName)}`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  if (!res.ok) {
+    const error = await res.text().catch(() => '')
+    throw new Error(error || 'Не удалось переименовать сессию')
+  }
+  return res.json()
+}
+
+export async function deleteChat(chatId: number, token: string) {
+  const res = await fetch(`${API_URL}/chat/delete_chat/${chatId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  if (!res.ok) {
+    const error = await res.text().catch(() => '')
+    throw new Error(error || 'Не удалось удалить сессию')
+  }
+}
+
 

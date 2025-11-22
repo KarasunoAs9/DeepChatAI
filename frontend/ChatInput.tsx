@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { SendIcon, StopCircleIcon } from 'lucide-react';
+import { SendIcon, StopCircleIcon, HeartIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ChatInputProps {
@@ -47,10 +47,10 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading = false,
   }, [message]);
 
   return (
-    <div className="border-t border-gray-200 bg-white p-4">
+    <div className="border-t border-border/50 bg-card/80 backdrop-blur-sm p-6">
       <div className="max-w-4xl mx-auto">
         <form onSubmit={handleSubmit}>
-          <div className="flex items-end gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+          <div className="flex items-end gap-4 p-4 bg-background/60 rounded-2xl border border-border/50 psychology-card">
             <Textarea
               ref={textareaRef}
               value={message}
@@ -59,12 +59,12 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading = false,
                 adjustTextareaHeight();
               }}
               onKeyDown={handleKeyDown}
-              placeholder={disabled ? "Подключение..." : "Введите ваше сообщение..."}
+              placeholder={disabled ? "Подключение к сессии..." : "Поделитесь своими мыслями и чувствами..."}
               disabled={disabled}
               className={cn(
-                "min-h-[40px] max-h-[120px] resize-none border-0 bg-transparent text-gray-900",
-                "placeholder:text-gray-500 focus-visible:ring-0 focus-visible:ring-offset-0",
-                "scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent",
+                "min-h-[44px] max-h-[140px] resize-none border-0 bg-transparent text-foreground text-base",
+                "placeholder:text-muted-foreground/70 focus-visible:ring-0 focus-visible:ring-offset-0",
+                "psychology-scrollbar",
                 disabled && "opacity-50 cursor-not-allowed"
               )}
               style={{ height: 'auto' }}
@@ -75,25 +75,30 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading = false,
                 <Button
                   type="button"
                   onClick={onStop}
-                  className="h-10 w-10 bg-red-600 hover:bg-red-700 text-white rounded-lg"
+                  className="h-12 w-12 bg-destructive hover:bg-destructive/90 text-destructive-foreground rounded-full shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105"
                 >
-                  <StopCircleIcon className="h-4 w-4" />
+                  <StopCircleIcon className="h-5 w-5" />
                 </Button>
               ) : (
                 <Button
                   type="submit"
                   disabled={!message.trim() || disabled}
-                  className="h-10 w-10 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:text-gray-500 text-white rounded-lg transition-colors duration-200"
+                  className="h-12 w-12 calming-button disabled:bg-muted disabled:text-muted-foreground disabled:hover:scale-100 disabled:shadow-none"
                 >
-                  <SendIcon className="h-4 w-4" />
+                  <SendIcon className="h-5 w-5" />
                 </Button>
               )}
             </div>
           </div>
           
-          <p className="text-xs text-gray-500 text-center mt-2">
-            Нажмите Enter для отправки, Shift+Enter для новой строки
-          </p>
+          <div className="flex items-center justify-center gap-4 mt-4 text-xs text-muted-foreground/70">
+            <div className="flex items-center gap-1">
+              <HeartIcon className="h-3 w-3" />
+              <span>Безопасное пространство</span>
+            </div>
+            <span>•</span>
+            <span>Enter - отправить, Shift+Enter - новая строка</span>
+          </div>
         </form>
       </div>
     </div>

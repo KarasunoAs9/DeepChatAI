@@ -23,6 +23,14 @@ const Index = () => {
     }
   };
 
+  const handleChatDeleted = (deletedChatId: number) => {
+    // Если удален текущий чат, сбрасываем выбор
+    if (currentChatId === deletedChatId) {
+      setCurrentChatId(undefined);
+      setCurrentChatName(undefined);
+    }
+  };
+
   if (loading) {
     return <div className="flex h-screen items-center justify-center text-gray-600">Загрузка…</div>
   }
@@ -38,6 +46,7 @@ const Index = () => {
         onToggle={handleToggleSidebar}
         onChatSelect={handleChatSelect}
         currentChatId={currentChatId}
+        onChatDeleted={handleChatDeleted}
       />
 
       <div className="flex-1">
